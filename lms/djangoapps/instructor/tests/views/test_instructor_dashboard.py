@@ -60,6 +60,21 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase):
         return 'Demographic data is now available in <a href="http://example.com/courses/{}" ' \
                'target="_blank">Example</a>.'.format(unicode(self.course.id))
 
+    def test_instructor_tab(self):
+        """
+        Verify that the instructor tab appears for staff only.
+        """
+        name = 'Instructor'
+        tab = self.check_tab(
+            tab_class=tabs.InstructorTab,
+            dict_tab={'type': tabs.InstructorTab.type, 'name': name},
+            expected_name=name,
+            expected_link=self.reverse('instructor_dashboard', args=[self.course.id.to_deprecated_string()]),
+            expected_tab_id=tabs.InstructorTab.type,
+            invalid_dict_tab=None,
+        )
+        self.check_can_display_results(tab, for_staff_only=True)
+
     def test_default_currency_in_the_html_response(self):
         """
         Test that checks the default currency_symbol ($) in the response
