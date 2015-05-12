@@ -42,7 +42,6 @@
 @import 'elements/typography';
 @import 'elements/controls';
 @import 'elements/system-feedback';
-@import 'elements/dropdown';
 
 // shared - course
 @import 'shared/fields';
