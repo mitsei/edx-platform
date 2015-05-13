@@ -1,6 +1,9 @@
 """Edx branding API
 """
 import logging
+from branding.models import BrandingApiConfig
+from django.http import Http404
+from util.json_request import JsonResponse
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from microsite_configuration import microsite
@@ -15,6 +18,11 @@ def get_footer():
     Returns:
         Dict of footer links
     """
+
+    # if configuration is not enabled then return 404
+    if not BrandingApiConfig.current().enabled:
+        raise Http404
+
     site_name = microsite.get_value('SITE_NAME', settings.SITE_NAME)
     context = dict()
     context["copy_right"] = copy_right()
