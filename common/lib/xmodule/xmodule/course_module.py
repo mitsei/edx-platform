@@ -855,6 +855,7 @@ class CourseFields(object):
         scope=Scope.settings,
     )
 
+
 class CourseModule(CourseFields, SequenceModule):  # pylint: disable=abstract-method
     """
     The CourseDescriptor needs its module_class to be a SequenceModule, but some code that
