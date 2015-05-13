@@ -6,6 +6,7 @@ Tests of branding api views.
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 import json
+from branding.models import BrandingApiConfig
 
 
 class TestFooter(TestCase):
@@ -15,9 +16,10 @@ class TestFooter(TestCase):
     def test_footer(self):
         """ Test the footer json
         """
+        config = BrandingApiConfig(enabled=True)
+        config.save()
         url = reverse("get_footer_data")
-        headers = {"Accept": "application/json"}
-        footer_data = self.client.get(url, headers=headers)
+        footer_data = self.client.get(url, HTTP_ACCEPT="application/json")
         json_data = json.loads(footer_data.content)
 
         self.assertIn("footer", json_data)
