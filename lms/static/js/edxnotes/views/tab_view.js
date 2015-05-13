@@ -52,6 +52,7 @@ define([
             // If the view is already rendered, destroy it.
             this.destroySubView();
             this.renderContent().always(this.hideLoadingIndicator);
+            this.$('#sr-focusable').focus();
             return this;
         },
 

@@ -16,9 +16,11 @@ define([
             titleElement = this.$el.find('.tags-title').filter(
                 function(){ return $(this).text() === displayedTitle; }
             );
-            $('html,body').animate({
-                scrollTop: titleElement.offset().top - 10
-            },'slow');
+            $('html,body').animate(
+                { scrollTop: titleElement.offset().top - 10 },
+                'slow',
+                function () { titleElement.focus(); }
+            );
         },
 
         initialize: function (options) {
@@ -111,7 +113,7 @@ define([
             getGroup: function (tagName) {
                 var group = new NoteGroupView.GroupView({
                     displayName: tagName,
-                    template: '<h3 class="tags-title"><%- displayName %></h3>',
+                    template: '<h3 class="tags-title sr-is-focusable" tabindex="-1"><%- displayName %></h3>',
                     className: "note-group"
                 });
                 this.children.push(group);

@@ -95,14 +95,17 @@ class EdxNotesTagsGroup(NoteChild, EdxNotesGroupMixin):
         The group_index must be supplied because JQuery must be used to get this information, and it
         does not have access to the bounded selector.
         """
-        top_script = "return $('" + self.TITLE_SELECTOR + "')[" + str(group_index) + "].getBoundingClientRect().top"
+        title_selector = "$('" + self.TITLE_SELECTOR + "')[" + str(group_index) + "]"
+        top_script = "return " + title_selector + ".getBoundingClientRect().top;"
         EmptyPromise(
             lambda: 8 < self.browser.execute_script(top_script) < 12,
             "Expected tag title '{}' to scroll to top, but was at location {}".format(
                 self.title, self.browser.execute_script(top_script)
             )
         ).fulfill()
-        return True
+        # Now also verify that focus has moved to this title (for screen readers):
+        active_script = "return " + title_selector + " === document.activeElement;"
+        return self.browser.execute_script(active_script)
 
 
 class EdxNotesPageItem(NoteChild):

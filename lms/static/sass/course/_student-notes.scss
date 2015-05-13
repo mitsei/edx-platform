@@ -45,6 +45,12 @@ $divider-visual-tertiary: ($baseline/20) solid $gray-l4;
       @extend .content; // needed extend carried over from course handouts UI, but should be cleaned up
       width: 100%;
     }
+
+    .sr-is-focusable,
+    .sr-is-focusable:focus,
+    .sr-is-focusable:active {
+      outline: none;
+    }
   }
 
   // +header +and search:
