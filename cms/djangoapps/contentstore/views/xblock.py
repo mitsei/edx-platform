@@ -6,7 +6,7 @@ from __future__ import absolute_import
 import logging
 import mimetypes
 
-from xblock.core import XBlock
+from xblock.core import XBlock, XBlockAside
 
 from django.conf import settings
 from django.http import Http404, HttpResponse
@@ -25,6 +25,10 @@ def xblock_resource(request, block_type, uri):  # pylint: disable=unused-argumen
     except IOError:
         log.info('Failed to load xblock resource', exc_info=True)
         raise Http404
+    except AttributeError:
+        from xmodule.modulestore import prefer_asides_then_xmodules
+        xblock_class = XBlockAside.load_class(block_type, prefer_asides_then_xmodules)
+        content = xblock_class.open_local_resource(uri)
     except Exception:  # pylint: disable=broad-except
         log.error('Failed to load xblock resource', exc_info=True)
         raise Http404

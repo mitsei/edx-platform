@@ -3,8 +3,12 @@
     'use strict';
 
     function initializeBlockLikes(block_class, initializer, element, requestToken) {
+        /*
+         * For asides, don't use the requestToken -- they don't have them in their
+         * data attributes.
+         */
         var requestToken = requestToken || $(element).data('request-token');
-        if (requestToken) {
+        if (requestToken && block_class !== 'xblock_asides-v1') {
             var selector = '.' + block_class + '[data-request-token="' + requestToken + '"]';
         } else {
             var selector = '.' + block_class;
@@ -92,7 +96,10 @@
 
             var requestToken = requestToken || $element.data('request-token');
             var children = XBlock.initializeXBlocks($element, requestToken);
+            var asides = XBlock.initializeXBlockAsides($element, requestToken);
             $element.prop('xblock_children', children);
+            $element.prop('xblock_asides', asides);
+
 
             return constructBlock(element, [initArgs(element)]);
         },
@@ -104,7 +111,31 @@
          */
         initializeAside: function(element, requestToken) {
             var blockUsageId = $(element).data('block-id');
-            var blockElement = $(element).siblings('[data-usage-id="' + blockUsageId + '"]')[0];
+            var studioPreview = $(element).siblings('[data-locator="' + blockUsageId + '"]');
+            var blockElement = studioPreview.find('[data-usage-id="' + blockUsageId + '"]')[0];
+//            var blockElement = $(element).siblings('[data-usage-id="' + blockUsageId + '"]')[0];
+            console.log('cjshaw here');
+            // inject a "skills" button to the actions-header
+            var actionsHeader = studioPreview.find('ul.actions-list');
+
+            actionsHeader.prepend('<li class="action-item action-skills">' +
+                '<a href="#" class="skills-button action-button">' +
+                '<span class="action-button-text">Skills</span></a></li>');
+
+            // bind the Skills button to the Aside
+            actionsHeader.find('li.action-skills')
+                .on('click', function () {
+                    var asideContent = $(element).children('div.hidden-aside');
+
+
+                    asideContent.dialog({
+                            modal: true,
+                            width: 1200,
+                            close: function (e, ui) {
+                                asideContent.dialog('destroy');
+                            }
+                        });
+                });
             return constructBlock(element, [blockElement, initArgs(element)]);
         },
 

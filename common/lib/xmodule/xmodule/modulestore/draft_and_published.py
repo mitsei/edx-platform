@@ -8,7 +8,7 @@ from contextlib import contextmanager
 from . import ModuleStoreEnum
 
 # Things w/ these categories should never be marked as version=DRAFT
-DIRECT_ONLY_CATEGORIES = ['course', 'chapter', 'sequential', 'about', 'static_tab', 'course_info']
+DIRECT_ONLY_CATEGORIES = ['course', 'chapter', 'sequential', 'about', 'static_tab', 'course_info', 'aside-usage-v1']
 
 
 class BranchSettingMixin(object):

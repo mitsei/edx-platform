@@ -4,6 +4,13 @@ Setup script for the Open edX package.
 
 from setuptools import setup
 
+
+ASIDES = [
+    # Tagging example
+    'tagging_aside = cms.lib.xblock.tagging:TaggingAside',
+]
+
+
 setup(
     name="Open edX",
     version="0.2",
@@ -22,5 +29,6 @@ setup(
             'random = openedx.core.djangoapps.user_api.partition_schemes:RandomUserPartitionScheme',
             'cohort = openedx.core.djangoapps.course_groups.partition_scheme:CohortPartitionScheme',
         ],
+        'xblock_asides.v1': ASIDES,
     }
 )
