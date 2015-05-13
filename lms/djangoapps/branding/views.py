@@ -12,7 +12,8 @@ import courseware.views
 from microsite_configuration import microsite
 from edxmako.shortcuts import marketing_link
 from util.cache import cache_if_anonymous
-from .api import get_footer
+from .api import get_footer, get_footer_static
+from util.json_request import JsonResponse, HttpResponse
 
 
 def get_course_enrollments(user):
@@ -106,4 +107,13 @@ def courses(request):
 
 
 def footer(request):
-    return get_footer()
+    if "application/json" in request.META.get('HTTP_ACCEPT'):
+        return JsonResponse(get_footer(), 200)
+    elif "text/javascript" in request.META.get('HTTP_ACCEPT'):
+        content = get_footer_static("footer.js")
+        return HttpResponse(content, content_type='text/javascript', status=200)
+    elif "text/css" in request.META.get('HTTP_ACCEPT'):
+        content = get_footer_static("footer.css")
+        return HttpResponse(content, content_type='text/javascript', status=200)
+    else:
+        return Http404

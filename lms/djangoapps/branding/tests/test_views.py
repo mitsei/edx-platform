@@ -16,7 +16,8 @@ class TestFooter(TestCase):
         """ Test the footer json
         """
         url = reverse("get_footer_data")
-        footer_data = self.client.get(url)
+        headers = {"Accept": "application/json"}
+        footer_data = self.client.get(url, headers=headers)
         json_data = json.loads(footer_data.content)
 
         self.assertIn("footer", json_data)

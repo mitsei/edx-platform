@@ -1,10 +1,10 @@
-"""Edx footer API
+"""Edx branding API
 """
 import logging
-from util.json_request import JsonResponse
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from microsite_configuration import microsite
+import os
 
 log = logging.getLogger("edx.footer")
 
@@ -23,7 +23,7 @@ def get_footer():
     context["social_links"] = social_links()
     context["about_links"] = about_edx_link(site_name)
 
-    return JsonResponse({"footer": context}, 200)
+    return {"footer": context}
 
 
 def copy_right():
@@ -52,48 +52,15 @@ def heading():
 def social_links():
     """ Returns the list of social link of footer
     """
-    return [
-        {
-            "provider": "facebook",
-            "title": _("Facebook"),
-            "url": "http://www.facebook.com/EdxOnline"
-        },
-        {
-            "provider": "twitter",
-            "title": _("Twitter"),
-            "url": "https://twitter.com/edXOnline"
-        },
-        {
-            "provider": "linkedin",
-            "title": _("LinkedIn"),
-            "url": "http://www.linkedin.com/company/edx"
-        },
-        {
-            "provider": "google",
-            "title": _("Google+"),
-            "url": "https://plus.google.com/+edXOnline"
-        },
-        {
-            "provider": "tumblr",
-            "title": _("Tumblr"),
-            "url": "http://edxstories.tumblr.com/"
-        },
-        {
-            "provider": "meetup",
-            "title": _("Meetup"),
-            "url": "http://www.meetup.com/edX-Global-Community"
-        },
-        {
-            "provider": "reddit",
-            "title": _("Reddit"),
-            "url": "http://www.reddit.com/r/edx"
-        },
-        {
-            "provider": "youtube",
-            "title": _("Youtube"),
-            "url": "https://www.youtube.com/user/edxonline?sub_confirmation=1"
-        },
-    ]
+    links = []
+    for social_name in settings.SOCIAL_MEDIA_FOOTER_NAMES:
+        links.append(
+            {
+                "provider": social_name,
+                "title": unicode(settings.SOCIAL_MEDIA_FOOTER_DISPLAY.get(social_name, {}).get("title", "")),
+                "url": settings.SOCIAL_MEDIA_FOOTER_URLS.get(social_name, "#")
+            }
+        )
 
 
 def about_edx_link(site_name):
@@ -133,3 +100,13 @@ def about_edx_link(site_name):
             "url": "{}/sitemap".format(site_name)
         },
     ]
+
+
+def get_footer_static(file_name):
+    """ Returns the static js/css contents as a string
+    """
+    file_dir = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(file_dir, "static/{}".format(file_name))
+    with open(file_path, "r") as _file:
+        contents = _file.read()
+    return contents
