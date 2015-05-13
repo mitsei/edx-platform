@@ -3,7 +3,6 @@
 import logging
 from branding.models import BrandingApiConfig
 from django.http import Http404
-from util.json_request import JsonResponse
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from microsite_configuration import microsite
@@ -47,13 +46,13 @@ def heading():
     """ Returns the heading text
     """
 
-    data = ("EdX offers interactive online classes and MOOCs from the world's best universities," +
-            " colleges and organizations. Online courses from MITx, HarvardX, BerkeleyX, UTx and" +
-            " many other universities can be taken here. Topics include biology, business, chemistry," +
-            " computer science, economics, finance, electronics, engineering, food and nutrition," +
-            " history, humanities, law, literature, math, medicine, music, philosophy, physics, science," +
-            " statistics and more. EdX is a non-profit online initiative created by founding partners" +
-            " Harvard and MIT.")
+    data = _("EdX offers interactive online classes and MOOCs from the world's best universities, "
+             "colleges and organizations. Online courses from MITx, HarvardX, BerkeleyX, UTx and "
+             "many other universities can be taken here. Topics include biology, business, chemistry,"
+             " computer science, economics, finance, electronics, engineering, food and nutrition,"
+             " history, humanities, law, literature, math, medicine, music, philosophy, physics, science,"
+             " statistics and more. EdX is a non-profit online initiative created by founding partners"
+             " Harvard and MIT.")
     return data
 
 
@@ -69,6 +68,7 @@ def social_links():
                 "url": settings.SOCIAL_MEDIA_FOOTER_URLS.get(social_name, "#")
             }
         )
+    return links
 
 
 def about_edx_link(site_name):
