@@ -67,26 +67,18 @@ def social_links():
 
 
 def about_edx_link(site_name):
-    """ Returns the list of about link of footer
+    """ Returns the list of marketing links of footer
     """
 
-    about_links = []
-    for key, value in settings.MKTG_URL_LINK_MAP.items():
-        # Skip disabled URLs
-        if value is None:
-            continue
-
-        # These urls are enabled separately
-        if key == "ROOT" or key == "COURSES":
-            continue
-
-        about_links.append(
-            {
-                "title": _(key),
-                "utl": marketing_link(key)
-            }
-        )
-    return about_links
+    return dict(
+        [
+            (_(key), marketing_link(key))
+            for key in (
+                settings.MKTG_URL_LINK_MAP.viewkeys() |
+                settings.MKTG_URLS.viewkeys()
+            )
+        ]
+    )
 
 
 def get_footer_static(file_name):
