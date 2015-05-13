@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from branding.models import BrandingApiConfig
 from django.http import Http404
 from django.shortcuts import redirect
 from django_future.csrf import ensure_csrf_cookie
@@ -107,6 +108,9 @@ def courses(request):
 
 
 def footer(request):
+    # if configuration is not enabled then return 404
+    if not BrandingApiConfig.current().enabled:
+        raise Http404
     if "application/json" in request.META.get('HTTP_ACCEPT'):
         return JsonResponse(get_footer(), 200)
     elif "text/javascript" in request.META.get('HTTP_ACCEPT'):

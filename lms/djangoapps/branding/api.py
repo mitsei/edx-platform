@@ -1,12 +1,11 @@
 """Edx branding API
 """
 import logging
-from branding.models import BrandingApiConfig
-from django.http import Http404
+import os
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from microsite_configuration import microsite
-import os
+from edxmako.shortcuts import marketing_link
 
 log = logging.getLogger("edx.footer")
 
@@ -17,10 +16,6 @@ def get_footer():
     Returns:
         Dict of footer links
     """
-
-    # if configuration is not enabled then return 404
-    if not BrandingApiConfig.current().enabled:
-        raise Http404
 
     site_name = microsite.get_value('SITE_NAME', settings.SITE_NAME)
     context = dict()
@@ -74,40 +69,24 @@ def social_links():
 def about_edx_link(site_name):
     """ Returns the list of about link of footer
     """
-    return [
-        {
-            "title": _("About"),
-            "url": "{}/about-us".format(site_name)
-        },
-        {
-            "title": _("News & Announcements"),
-            "url": "{}/news-announcements".format(site_name)
-        },
-        {
-            "title": _("Contact"),
-            "url": "{}/contact-us".format(site_name)
-        },
-        {
-            "title": _("FAQs"),
-            "url": "{}/about/student-faq".format(site_name)
-        },
-        {
-            "title": _("edX Blog"),
-            "url": "{}/edx-blog".format(site_name)
-        },
-        {
-            "title": _("Donate to edX"),
-            "url": "{}/donate".format(site_name)
-        },
-        {
-            "title": _("Jobs at edX"),
-            "url": "{}/jobs".format(site_name)
-        },
-        {
-            "title": _("Site Map"),
-            "url": "{}/sitemap".format(site_name)
-        },
-    ]
+
+    about_links = []
+    for key, value in settings.MKTG_URL_LINK_MAP.items():
+        # Skip disabled URLs
+        if value is None:
+            continue
+
+        # These urls are enabled separately
+        if key == "ROOT" or key == "COURSES":
+            continue
+
+        about_links.append(
+            {
+                "title": _(key),
+                "utl": marketing_link(key)
+            }
+        )
+    return about_links
 
 
 def get_footer_static(file_name):
