@@ -667,7 +667,7 @@ class MatlabTest(unittest.TestCase):
             \'msg\': u\'Submitted. As soon as a response is returned, this message will be replaced by that feedback.\',
             \'matlab_editor_js\': \'/dummy-static/js/vendor/CodeMirror/octave.js\', \'hidden\': \'\',
             \'id\': \'prob_1_2\', \'tabsize\': 4}</div>
-            """).replace('\n', '').split())
+            """).replace('\n', ' ').split())
         )
 
         # test html, that is correct HTML5 html, but is not parsable by XML parser.
