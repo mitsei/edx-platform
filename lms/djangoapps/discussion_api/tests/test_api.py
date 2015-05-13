@@ -408,7 +408,6 @@ class ContentTestMixin(CommentsServiceMockMixin):
         ret = {
             "id": "dummy",
             "thread_id": "dummy",
-            "parent_id": None,
             "user_id": str(self.author.id),
             "username": self.author.username,
             "anonymous": False,
@@ -832,7 +831,7 @@ class GetCommentListTest(ContentTestMixin, ModuleStoreTestCase):
             )
         self.assertEqual(
             assertion.exception.message_dict,
-            {"endorsed": "This field may not be provided for discussion threads."}
+            {"endorsed": ["This field may not be specified for discussion threads."]}
         )
 
     def test_question_without_endorsed(self):
@@ -843,7 +842,7 @@ class GetCommentListTest(ContentTestMixin, ModuleStoreTestCase):
             )
         self.assertEqual(
             assertion.exception.message_dict,
-            {"endorsed": "This field is required for question threads."}
+            {"endorsed": ["This field is required for question threads."]}
         )
 
     def test_empty(self):
@@ -892,7 +891,6 @@ class GetCommentListTest(ContentTestMixin, ModuleStoreTestCase):
             {
                 "id": "test_comment_1",
                 "thread_id": "test_thread",
-                "parent_id": None,
                 "user_id": str(self.author.id),
                 "username": self.author.username,
                 "anonymous": False,
@@ -907,7 +905,6 @@ class GetCommentListTest(ContentTestMixin, ModuleStoreTestCase):
             {
                 "id": "test_comment_2",
                 "thread_id": "test_thread",
-                "parent_id": None,
                 "user_id": str(self.author.id),
                 "username": self.author.username,
                 "anonymous": True,
@@ -921,7 +918,6 @@ class GetCommentListTest(ContentTestMixin, ModuleStoreTestCase):
                     {
                         "id": "test_comment_3",
                         "thread_id": "test_thread",
-                        "parent_id": "test_comment_2",
                         "user_id": str(self.author.id),
                         "username": self.author.username,
                         "anonymous": False,
@@ -936,7 +932,6 @@ class GetCommentListTest(ContentTestMixin, ModuleStoreTestCase):
                     {
                         "id": "test_comment_4",
                         "thread_id": "test_thread",
-                        "parent_id": "test_comment_2",
                         "user_id": str(self.author.id),
                         "username": self.author.username,
                         "anonymous": False,

@@ -306,7 +306,7 @@ def get_thread_list(request, course_key, page, page_size):
     return get_paginated_data(request, results, page, num_pages)
 
 
-def _cc_comment_to_api_comment(cc_comment, context):
+def _cc_comment_to_api_comment(cc_comment, parent_id, context):
     """
     Convert a comment data dict from the comment_client format (which is a
     direct representation of the format returned by the comments service) to the
@@ -323,11 +323,13 @@ def _cc_comment_to_api_comment(cc_comment, context):
     ret = _get_common_fields(cc_comment, context)
     ret.update({
         key: cc_comment[key]
-        for key in ["parent_id", "thread_id"]
+        for key in ["thread_id"]
     })
     ret.update({
+        "parent_id": parent_id,
         "children": [
-            _cc_comment_to_api_comment(child, context) for child in cc_comment["children"]
+            _cc_comment_to_api_comment(child, cc_comment["id"], context)
+            for child in cc_comment["children"]
         ],
     })
     return ret
@@ -377,7 +379,7 @@ def get_comment_list(request, thread_id, endorsed, page, page_size):
     # existing comments service interface
     if cc_thread["thread_type"] == "question":
         if endorsed is None:
-            raise ValidationError({"endorsed": "This field is required for question threads."})
+            raise ValidationError({"endorsed": ["This field is required for question threads."]})
         elif endorsed:
             # CS does not apply resp_skip and resp_limit to endorsed responses
             # of a question post
@@ -388,7 +390,9 @@ def get_comment_list(request, thread_id, endorsed, page, page_size):
             resp_total = cc_thread["non_endorsed_resp_total"]
     else:
         if endorsed is not None:
-            raise ValidationError({"endorsed": "This field may not be provided for discussion threads."})
+            raise ValidationError(
+                {"endorsed": ["This field may not be specified for discussion threads."]}
+            )
         responses = cc_thread["children"]
         resp_total = cc_thread["resp_total"]
 
@@ -399,5 +403,5 @@ def get_comment_list(request, thread_id, endorsed, page, page_size):
         raise Http404
     num_pages = (resp_total + page_size - 1) / page_size if resp_total else 1
 
-    results = [_cc_comment_to_api_comment(response, context) for response in responses]
+    results = [_cc_comment_to_api_comment(response, None, context) for response in responses]
     return get_paginated_data(request, results, page, num_pages)
