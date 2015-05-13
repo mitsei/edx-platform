@@ -31,8 +31,19 @@ def get_footer():
 def copy_right():
     """ Returns the copy rights text
     """
-    data = _("(c) 2015 edX Inc. EdX, Open edX, and the edX and Open edX logos "
-             "are registered trademarks or trademarks of edX Inc.")
+    if settings.FEATURES.get('IS_EDX_DOMAIN', False):
+        data = _(
+            "(c) 2015 edX Inc. EdX, Open edX, and the edX and Open edX logos "
+            "are registered trademarks or trademarks of edX Inc."
+        )
+    else:
+        data = _(
+            "EdX, Open edX, and the edX and Open edX logos are registered trademarks or "
+            "trademarks of {link_start}edX Inc.{link_end}"
+        ).format(
+            link_start=u"<a href='https://www.edx.org/'>",
+            link_end=u"</a>"
+        )
 
     return data
 
@@ -40,14 +51,22 @@ def copy_right():
 def heading():
     """ Returns the heading text
     """
-
-    data = _("EdX offers interactive online classes and MOOCs from the world's best universities, "
-             "colleges and organizations. Online courses from MITx, HarvardX, BerkeleyX, UTx and "
-             "many other universities can be taken here. Topics include biology, business, chemistry,"
-             " computer science, economics, finance, electronics, engineering, food and nutrition,"
-             " history, humanities, law, literature, math, medicine, music, philosophy, physics, science,"
-             " statistics and more. EdX is a non-profit online initiative created by founding partners"
-             " Harvard and MIT.")
+    if settings.FEATURES.get('IS_EDX_DOMAIN', False):
+        data = _("EdX offers interactive online classes and MOOCs from the world's best universities, "
+                 "colleges and organizations. Online courses from MITx, HarvardX, BerkeleyX, UTx and "
+                 "many other universities can be taken here. Topics include biology, business, chemistry,"
+                 " computer science, economics, finance, electronics, engineering, food and nutrition,"
+                 " history, humanities, law, literature, math, medicine, music, philosophy, physics, science,"
+                 " statistics and more. EdX is a non-profit online initiative created by founding partners"
+                 " Harvard and MIT.")
+    else:
+        data = _("EdX offers interactive online classes and MOOCs from the world's best universities, "
+                 "colleges and organizations. Online courses from MITx, HarvardX, BerkeleyX, UTx and "
+                 "many other universities can be taken here. Topics include biology, business, chemistry,"
+                 " computer science, economics, finance, electronics, engineering, food and nutrition,"
+                 " history, humanities, law, literature, math, medicine, music, philosophy, physics, science,"
+                 " statistics and more. EdX is a non-profit online initiative created by founding partners"
+                 " Harvard and MIT.")
     return data
 
 

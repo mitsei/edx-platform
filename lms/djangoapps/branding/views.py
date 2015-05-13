@@ -4,6 +4,7 @@ from branding.models import BrandingApiConfig
 from django.http import Http404
 from django.shortcuts import redirect
 from django_future.csrf import ensure_csrf_cookie
+from django.views.decorators.cache import cache_page
 
 import student.views
 from student.models import CourseEnrollment
@@ -107,6 +108,7 @@ def courses(request):
     return courseware.views.courses(request)
 
 
+@cache_page(60 * 15)
 def footer(request):
     # if configuration is not enabled then return 404
     if not BrandingApiConfig.current().enabled:
